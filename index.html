@@ -1,0 +1,64 @@
+<!DOCTYPE <!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="http://localhost:8066/socket.io/socket.io.js"></script>
+    <script>
+        function enterData(latitude, longitude, ride_id) {
+            const socket = io.connect("http://localhost:8066");
+            var obj = {
+                latitude: latitude,
+                longitude: longitude,
+                ride_id: ride_id
+            }
+            socket.emit('message-input', obj);
+        }
+    </script>
+    <script>
+        function fetchData(ride_id) {
+            const socket = io.connect("http://localhost:8066");
+            socket.emit('message-request', ride_id);
+        }
+    </script>
+    <script>
+        const socket = io.connect();
+
+        socket.on('message-output', (data) => {
+            var img = document.getElementById('display');
+            img.innerText = "Here's the polyline: " + data + "\n" + "Click on the link below. Track the rider by entering polyline in the followed link." + "\n";
+            var aTag = document.createElement('a');
+            aTag.setAttribute('href', "https://developers.google.com/maps/documentation/utilities/polylineutility");
+            aTag.innerHTML = "https://developers.google.com/maps/documentation/utilities/polylineutility";
+            img.appendChild(aTag);
+
+        })
+    </script>
+</head>
+
+<body>
+    Enter ride id:
+    <input type="text" , name="ride_id" , id="ride_id">
+    <br> Enter latitude:
+    <input type="text" , name="latitude" , id="latitude">
+    <br> Enter longitude:
+    <input type="text" , name="longitude" , id="longitude">
+    <br>
+    <button type="submit" onclick="enterData(document.getElementById('latitude').value, document.getElementById('longitude').value, document.getElementById('ride_id').value)"
+        action="">submit</button>
+    <br>
+    <br>
+    <br>
+    <br> Track rider here:
+    <br> Enter ride id:
+    <input type="text" , name="ride_id" , id="uid">
+    <br>
+    <button type="submit" onclick="fetchData(document.getElementById('uid').value)" action="">submit</button>
+
+    <div id="display"></div>
+</body>
+
+</html>
